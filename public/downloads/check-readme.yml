@@ -1,0 +1,26 @@
+name: Проверка README
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получение репозитория
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Проверка обязательной фразы
+        shell: bash
+        run: |
+          if [ ! -f README.md ]; then
+            printf '%s\n' 'Ошибка: файл README.md не найден'
+            exit 1
+          fi
+          if ! grep -Fq -- 'проверочная фраза' README.md; then
+            printf '%s\n' 'Проверка не пройдена: обязательная фраза не найдена'
+            exit 1
+          fi
+          printf '%s\n' 'Проверка пройдена: обязательная фраза найдена'
